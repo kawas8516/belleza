@@ -1,0 +1,150 @@
+*{
+    text-decoration: none;
+    list-style: none;
+}
+a{
+    color: white;
+
+}
+body, h1, ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: url(https://images.pexels.com/photos/3736327/pexels-photo-3736327.jpeg);
+    font-family: 'Cursive';
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    width: 100%;   
+}
+/* .beginning{
+    border: none;
+     position: fixed; 
+    top:0;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 98%;
+     padding: 10px; 
+    margin:0.5% 1%;
+     background-color: white;
+    border-radius: 10px; 
+}
+.logo{
+    font-size: 1.4rem;
+    color: black;
+} 
+
+header {
+     padding-top: 10ppx;
+    padding-left: 15px;
+    padding-right: 15px; 
+    padding-bottom: 15px; 
+    text-align: center; 
+} */
+
+/* h1 {
+    color: #781d19;
+    font-size: 36px;
+    font-size:40px;
+}
+
+
+nav {
+    background: scroll;
+    width: 100%;
+    padding: 20px 0;
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+}
+
+nav li {
+    display: inline;
+    margin-right: 20px;
+    font-weight: bold;
+}
+
+nav a {
+    text-decoration: none;
+    color: black;
+    font-family: 'Inter', sans-serif;
+} */
+/* .button{
+    border:3px solid black;  
+    font-size: 1.4rem;
+    font-family: 'Space Mono', monospace;;
+    color: rgb(245, 245, 245);
+    padding: 2px 5px;
+    border-radius: 13px;
+}
+
+.button>a{
+    text-decoration: none;
+    color: black;
+} */
+header {
+    margin-top: 80px;;
+   padding-left: 15px;
+   padding-right: 15px; 
+   padding-bottom: 15px; 
+   text-align: center; 
+} 
+.services {
+    display: flex;
+    justify-content: space-around;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 80%;
+    width: 100%;
+}
+
+#service-item {
+    width: 300px;
+    height: auto;
+    border-color: #333;
+    background-color: whitesmoke;
+    padding: 20px;
+    border: 2px solid black;
+    border-radius: 8px;
+}
+
+#service-item img{
+    height: 300px;;
+     width:100%;
+}
+
+
+
+.service-title {
+    font-family: 'Cursive', cursive;
+    font-size: 24px;
+    color: #333;
+}
+
+.service-description {
+    font-size: 16px;
+    color: black;
+}
+#foot{
+    position:absolute;
+    bottom:0;                     
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0px;
+    width: 100%;
+    color: white;
+    background-color: black;
+}
+#foot img{
+    width: 20px ;
+    height: 20px;
+}
+.cname>a{
+    color: white;
+    text-decoration: none;
+}

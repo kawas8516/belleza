@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.embeddedhtml": "html",
+        "PPT312.C": "cpp"
+    },
+    "liveServer.settings.port": 5501
+}

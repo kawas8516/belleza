@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Belleza Registration</title>
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+       background-image: url('https://images.pexels.com/photos/13068359/pexels-photo-13068359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');  
+      background-size: cover;
+      background-position: center; 
+      font-family: 'Arial', sans-serif;
+      color: black;  
+    }
+
+    .registration-container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: rgba(255, 255, 255, 0.7);  
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333; 
+    }
+  </style>
+</head>
+<body>
+
+  <div class="registration-container">
+    <h1>Belleza Registration</h1>
+
+    <form>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name"> <br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email"> <br><br>
+
+        <label for="contact">Contact Number:</label>
+        <input type="tel" id="contact" name="contact"> <br><br>
+
+        <label>Services Category:</label> <br><br>
+		<label>Hair services:</label>
+        <input type="checkbox" id="service1" name="services" value="Service 1">
+        <label for="service1">Haircut</label>
+
+        <input type="checkbox" id="service2" name="services" value="Service 2">
+        <label for="service2">Color and Haircut</label>
+
+        <input type="checkbox" id="service3" name="services" value="Service 3">
+        <label for="service3">Hair Treatment</label> 
+		
+		<input type="checkbox" id="service4" name="services" value="Service 4">
+        <label for="service4">Voluming hair treatment</label>
+		
+		<input type="checkbox" id="service5" name="services" value="Service 5">
+        <label for="service5">Healthy scalp treatment</label>
+		
+		<input type="checkbox" id="service6" name="services" value="Service 6">
+        <label for="service6">Luxury blow dry</label>
+		
+		<input type="checkbox" id="service7" name="services" value="Service 7">
+        <label for="service7">Shine and gloss treatment</label>
+		
+		<br><br>
+		
+		<label>Skin services:</label>
+        <input type="checkbox" id="service1" name="services" value="Service 1">
+        <label for="service1">Sugar Waxing</label>
+
+        <input type="checkbox" id="service2" name="services" value="Service 2">
+        <label for="service2">Laser hair removal</label>
+
+        <input type="checkbox" id="service3" name="services" value="Service 3">
+        <label for="service3">brightening facial</label> 
+		
+		<input type="checkbox" id="service4" name="services" value="Service 4">
+        <label for="service4">Dermaplaning</label>
+		
+		<input type="checkbox" id="service5" name="services" value="Service 5">
+        <label for="service5">Microneedling</label>
+		
+		<input type="checkbox" id="service6" name="services" value="Service 6">
+        <label for="service6">Retinol skincare</label>
+		
+		<input type="checkbox" id="service7" name="services" value="Service 7">
+        <label for="service7">Chemical peels</label> <br><br>
+		
+		<label>Body services:</label>
+        <input type="checkbox" id="service1" name="services" value="Service 1">
+        <label for="service1">Contouring body wrap</label>
+
+        <input type="checkbox" id="service2" name="services" value="Service 2">
+        <label for="service2">Slimming body treatment</label>
+
+        <input type="checkbox" id="service3" name="services" value="Service 3">
+        <label for="service3">Scrub and Mud treatment</label> 
+		
+		<input type="checkbox" id="service4" name="services" value="Service 4">
+        <label for="service4">Detox dry brushing</label> <br><br>
+		
+		<label>Choose stylist:</label>
+        <select id="stylish" name="Stylish">
+            <option value="">Choose your Stylish</option>
+            <option value="stylish1"></option>
+            <option value="stylish2"></option>
+            <option value="stylish3"></option>
+        </select>
+		<br><br>
+
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date"> <br><br>
+
+        <label for="time">Time:</label>
+        <input type="time" id="time" name="time"> <br><br>
+
+        <input type="submit" class="submit-button" value="Submit">
+    </form>
+
+  </div>
+  
+    <!-- <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Retrieve the selected service from session storage
+    const selectedService = sessionStorage.getItem('selectedService');
+
+    // Highlight the selected service on the registration page
+    if (selectedService) {
+      const serviceCheckbox = document.getElementById(selectedService);
+      if (serviceCheckbox) {
+        serviceCheckbox.checked = true;
+        // You can also add additional styling to make the selected service stand out
+        serviceCheckbox.parentElement.style.border = '2px solid red';
+      }
+    }
+  });
+</script> -->
+  
+
+</body>
+</html>
