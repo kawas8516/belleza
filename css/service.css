@@ -1,0 +1,61 @@
+/*
+  service.html only. Shared nav/footer/service-card/font rules live in
+  main.css. The Colorlib-independent .logo{color:black} override that used
+  to live here was dead code -- hf.css's .logo{color:whitesmoke} always
+  loaded after it and won on specificity, so it never actually rendered.
+  An abandoned, fully commented-out nav/header/button block (~65 lines) also
+  used to live here -- already inert, not carried over.
+*/
+
+body {
+    background: url(https://images.pexels.com/photos/3736327/pexels-photo-3736327.jpeg);
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Section rhythm: nav (fixed) -> header -> card grid -> footer. Previously
+   every boundary was 0-3px -- header nearly touched the fixed nav, and the
+   card grid touched both the header above and the footer below. Generous
+   separation (48-96px) between distinct sections, per the shared --space-lg
+   token already defined in main.css. */
+
+header {
+    margin-top: 130px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+    text-align: center;
+}
+
+#overall {
+    padding: var(--space-md) 24px var(--space-lg);
+}
+
+/* Was a flex row of fixed-300px cards with justify-content:space-around --
+   on a wide viewport that produced huge, uncontrolled gaps between cards
+   (arbitrary spacing, not a designed gap), and had no responsive behavior
+   at all (cards would overflow a narrow viewport rather than wrap). A grid
+   with an explicit gap and auto-fit columns fixes both: consistent spacing
+   at any width, and cards reflow to fewer columns as the viewport narrows
+   with no separate breakpoint needed. */
+.services {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-md);
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.service-item {
+    /* main.css's .service-item{width:300px} is shared with the home page's
+       own flex layout, which still wants that fixed width -- override it
+       here so the grid track controls this page's card width instead. */
+    width: auto;
+}
+
+.services-link {
+    text-decoration: none;
+    display: block;
+}

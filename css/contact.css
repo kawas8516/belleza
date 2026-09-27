@@ -1,0 +1,63 @@
+/*
+  contact.html only. Shared nav/footer/font rules live in main.css -- this
+  page used to have its own <header><nav><ul> markup and duplicate
+  .logo/.button/nav-link CSS instead of sharing hf.css/main.css; the markup
+  is now unified with index.html/service.html's .nav/.middle-part structure
+  (see contact.html), so only the page's own content styling stays here.
+
+  #social/#addr rules that used to live here were dead: the footer this page
+  actually renders uses .cname/#foot (now in main.css), never #social/#addr.
+*/
+
+.contact-section {
+    background-image: url('https://thesalonbusiness.com/wp-content/uploads/2020/04/green-hair-salon-waiting-area-scaled.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.content-container {
+    padding-top: 140px;
+    display: flex;
+    justify-content: center;
+}
+
+.contact-container {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    width: 80%;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.contact-container h1 {
+    font-size: 36px;
+    color: #000;
+    margin-bottom: 10px;
+}
+
+.contact-options {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    font-size: 20px;
+}
+
+.contact-option {
+    margin: 10px 0;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.contact-option:hover {
+    color: #FFD700;
+}
+
+.contact-container p {
+    font-size: 16px;
+    margin-top: 20px;
+    color: #000;
+}

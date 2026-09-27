@@ -11,12 +11,6 @@ document.addEventListener("DOMContentLoaded", function () {
             // Remove hover styles if needed
             item.style.backgroundColor = "whitesmoke";
         });
-
-        item.addEventListener("click", function () {
-            const serviceName = item.getAttribute("data-service");
-            // Open registration page or perform any desired action
-            alert(`Opening registration page for ${serviceName}`);
-        });
     });
 });
 let slideIndex = 1;
