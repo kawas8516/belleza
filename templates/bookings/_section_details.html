@@ -1,0 +1,20 @@
+<fieldset class="booking-section" id="section-details">
+    <legend><h2>Your details</h2></legend>
+    <div class="field-grid">
+        <div class="field field--wide">
+            <label for="id_contact_name">Name</label>
+            <input type="text" id="id_contact_name" name="contact_name" value="{{ form.contact_name.value|default_if_none:'' }}" autocomplete="name" required{% if form.contact_name.errors %} aria-invalid="true" aria-describedby="id_contact_name-error"{% endif %}>
+            {% include "bookings/_field_errors.html" with field=form.contact_name %}
+        </div>
+        <div class="field">
+            <label for="id_contact_email">Email</label>
+            <input type="email" id="id_contact_email" name="contact_email" value="{{ form.contact_email.value|default_if_none:'' }}" autocomplete="email" required{% if form.contact_email.errors %} aria-invalid="true" aria-describedby="id_contact_email-error"{% endif %}>
+            {% include "bookings/_field_errors.html" with field=form.contact_email %}
+        </div>
+        <div class="field">
+            <label for="id_contact_phone">Phone</label>
+            <input type="tel" id="id_contact_phone" name="contact_phone" value="{{ form.contact_phone.value|default_if_none:'' }}" autocomplete="tel" placeholder="+919876543210" required{% if form.contact_phone.errors %} aria-invalid="true" aria-describedby="id_contact_phone-error"{% endif %}>
+            {% include "bookings/_field_errors.html" with field=form.contact_phone %}
+        </div>
+    </div>
+</fieldset>

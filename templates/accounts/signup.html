@@ -1,0 +1,54 @@
+{% extends "accounts/_auth_base.html" %}
+{% load static %}
+
+{% block title %}Sign up &mdash; Belleza{% endblock %}
+
+{% block auth_form %}
+     <!-- Sign up form -->
+        <section class="signup">
+            <div class="container">
+                <div class="signup-content">
+                    <div class="signup-form">
+                        <h2 class="form-title">Sign up</h2>
+                        <form method="POST" class="register-form" id="register-form" novalidate>
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ next }}">
+                            {% for error in form.non_field_errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                            <div class="form-group">
+                                <label for="id_full_name"><img class="form-icon form-icon--account" src="{% static 'img/icon-account.svg' %}" alt=""></label>
+                                <input type="text" name="full_name" id="id_full_name" placeholder="Your Name" value="{{ form.full_name.value|default_if_none:'' }}" autocomplete="name" required/>
+                            </div>
+                            {% for error in form.full_name.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                            <div class="form-group">
+                                <label for="id_email"><img class="form-icon" src="{% static 'img/icon-email.svg' %}" alt=""></label>
+                                <input type="email" name="email" id="id_email" placeholder="Your Email" value="{{ form.email.value|default_if_none:'' }}" autocomplete="email" required/>
+                            </div>
+                            {% for error in form.email.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                            <div class="form-group">
+                                <label for="id_password1"><img class="form-icon" src="{% static 'img/icon-lock.svg' %}" alt=""></label>
+                                <input type="password" name="password1" id="id_password1" placeholder="Password" autocomplete="new-password" required/>
+                            </div>
+                            {% for error in form.password1.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                            <div class="form-group">
+                                <label for="id_password2"><img class="form-icon" src="{% static 'img/icon-lock-outline.svg' %}" alt=""></label>
+                                <input type="password" name="password2" id="id_password2" placeholder="Repeat your password" autocomplete="new-password" required/>
+                            </div>
+                            {% for error in form.password2.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                            <div class="form-group">
+                                <input type="checkbox" name="agree_terms" id="id_agree_terms" class="agree-term" {% if form.agree_terms.value %}checked{% endif %}/>
+                                <label for="id_agree_terms" class="label-agree-term"><span><span></span></span>I agree all statements in  <a href="#" class="term-service">Terms of service</a></label>
+                            </div>
+                            {% for error in form.agree_terms.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                            <div class="form-group form-button">
+                                <input type="submit" name="signup" id="signup" class="form-submit" value="Register"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="signup-image">
+                        <figure><img src="{% static 'img/login-signup.jpg' %}" alt="Belleza salon interior"></figure>
+                        <a href="{% url 'accounts:login' %}" class="signup-image-link">I am already member</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+{% endblock %}

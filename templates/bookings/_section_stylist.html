@@ -1,0 +1,18 @@
+<fieldset class="booking-section" id="section-stylist"{% if form.stylist.errors %} aria-describedby="id_stylist-error"{% endif %}>
+    <legend><h2>Stylist</h2></legend>
+    {% include "bookings/_field_errors.html" with field=form.stylist %}
+    <div class="chip-grid">
+        <input type="radio" class="chip-input" id="stylist-any" name="stylist" value=""{% if not selected_stylist %} checked{% endif %} data-refresh>
+        <label class="chip" for="stylist-any">
+            <span class="chip-title">Any stylist</span>
+            <span class="chip-meta">Whoever is free</span>
+        </label>
+        {% for stylist in stylists %}
+        <input type="radio" class="chip-input" id="stylist-{{ stylist.pk }}" name="stylist" value="{{ stylist.pk }}"{% if stylist.pk|stringformat:"s" == selected_stylist %} checked{% endif %} data-refresh>
+        <label class="chip" for="stylist-{{ stylist.pk }}">
+            <span class="chip-title">{{ stylist.name }}</span>
+            <span class="chip-meta">{{ stylist.specialties.all|join:", " }}</span>
+        </label>
+        {% endfor %}
+    </div>
+</fieldset>

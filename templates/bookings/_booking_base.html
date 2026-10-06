@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% load static %}
+
+{# Booking pages: no Google Fonts, no main.css, no nav/footer -- as the old registration.html. #}
+{% block fonts %}{% endblock %}
+{% block base_css %}<link rel="stylesheet" href="{% static 'css/booking.css' %}">{% endblock %}
+{% block footer %}{% endblock %}

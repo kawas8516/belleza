@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}home{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/home.css' %}">{% endblock %}
+
+{% block content %}
+        <section class="beginning" id="tag-begin">
+            {% include "partials/_nav.html" %}
+
+        <div id="tag-begin-box" class="c-begin-box">
+            <h1>{{ site.hero_title }}</h1>
+            <p>{{ site.hero_subtitle }}</p>
+            <button class="explore-button" formaction="service copy.html">Explore</button>
+        </div>
+
+    </section>
+        <section class="intro" id="stpart" >
+           <p style="font-size: 26px;margin: 10px;"> {{ site.intro_text }}</p>
+        </section>
+        <section class="service" id="overall">
+            <h2 style="font-size: 25px;text-align: center; font-family: 'Poppins', sans-serif;padding-top: 20px;"> Services We offer</h2>
+                <div class="services">
+                    {% include "services/_cards.html" with categories=featured_categories %}
+            </div>
+        </section>
+        <section id="aesthic-wall">
+              <div class="wall-a">
+                <div>
+                    <img src="https://images.pexels.com/photos/2528695/pexels-photo-2528695.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="" width="auto" height="300px">
+                </div>
+                <div>
+                    <img src="https://i.pinimg.com/564x/a2/94/9b/a2949bb84475e2c962baf76e33f75e2a.jpg" width="auto" height="300px">
+                </div>
+                <div>
+                    <img src="https://i.pinimg.com/564x/b5/7d/d3/b57dd3650b5d345af25a3486c07a4725.jpg" width="auto" height="300px">
+                </div>
+                <div>
+                    <img src="https://i.pinimg.com/originals/65/8b/90/658b9099d32e43f2b321b6cc68c173e8.jpg" width="auto" height="300px">
+                </div>
+              </div>
+              <div class="wall-a">
+                <div>
+                    <img src="https://i.pinimg.com/564x/ad/71/47/ad7147d676ce93c1501c46e900fb5663.jpg" width="auto" height="300px">
+                </div>
+                <div>
+                    <img src="https://i.pinimg.com/564x/25/45/7d/25457d5f2f0108eae5e0f89645a882a1.jpg" width="auto" height="300px">
+                </div>
+
+
+                <div>
+                    <img src="https://i.pinimg.com/564x/22/3e/05/223e05e33ffc180d6ffc4066573dd776.jpg" width="auto" height="300px">
+                </div>
+                <div>
+                    <img src="https://i.pinimg.com/564x/3d/7b/f5/3d7bf5bb1c464ccbc5a89f3e058ca37c.jpg" width="auto" height="300px">
+                </div>
+
+              </div>
+
+        </section>
+        <section id="reviews">
+            <!-- Slideshow container -->
+            <div class="slideshow-container">
+
+                <!-- Full-width images with number and caption text -->
+                <div class="mySlides fade">
+                <div class="numbertext">1 / 5</div>
+                <p class="rev">
+                    I had an incredible experience at Belleza! The service was exceptionally smooth, from booking my appointment online to walking into the salon. The staff were not only well-trained but also incredibly humble and attentive. They took the time to understand my preferences and offered valuable suggestions. The quality of products used during my treatment was top-notch, leaving me feeling pampered and refreshed. Belleza has truly set the bar high for salon experiences!
+                <br>-Grace H.</p>
+                </div>
+
+                <div class="mySlides fade">
+                <div class="numbertext">2 / 5</div>
+                <p class="rev">Belleza is a game-changer when it comes to salon experiences. The staff's level of professionalism and expertise is unparalleled. The service is executed with such smooth precision that it enhances the overall experience. The booking system is user-friendly, making it convenient to schedule appointments across their different salons. The staff's humility and genuine care for the clients set Belleza apart. Combine that with the best quality products, and you have a salon that truly prioritizes its clients' well-being.
+                   <br> -Sarah L.</p>
+                </div>
+
+                <div class="mySlides fade">
+                <div class="numbertext">3 / 5</div>
+                <p class="rev">
+                    I've visited numerous salons, but Belleza stands out for its exceptional service. The staff is not only well-trained in the latest beauty techniques but also remarkably humble and friendly. The booking process is seamless, and they make every effort to accommodate your schedule. The salon itself is beautifully designed, creating a calming ambiance. The products they use are of the highest quality, and I always leave feeling like a million bucks. Belleza is a gem in the world of beauty salons.
+                </br>-Michalle T.</p>
+                </div>
+
+                <div class="mySlides fade">
+                <div class="numbertext">4 / 5</div>
+                <p class="rev">
+                    Belleza has become my preferred choice for salon services, and for good reason. The staff's expertise is evident in the flawless execution of their services. Their humility and friendliness create a welcoming environment, making each visit a pleasure. The booking system is efficient, allowing for easy appointment scheduling across their network of salons. The quality of the products they use is outstanding, and the results speak for themselves. Belleza has mastered the art of providing a smooth, high-quality salon experience.
+                <br>-Alex R.</p>
+                </div>
+
+                <div class="mySlides fade">
+                <div class="numbertext">5 / 5</div>
+                <p class="rev">
+                    Belleza is a salon that knows how to deliver an exceptional experience. The staff is not only well-trained but also incredibly humble, making you feel valued as a customer. The service is seamlessly executed, and the use of top-quality products enhances the overall result. What sets Belleza apart is the convenience of booking appointments across their various salons. It's a one-stop destination for anyone looking for a smooth, professional, and rejuvenating salon experience. Highly recommended!
+                <br>-Emily T.</p>
+                </div>
+
+                <!-- Next and previous buttons -->
+                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            </div>
+            <br>
+
+            <!-- The dots/circles -->
+            <div style="text-align:center">
+                <span class="dot" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+                <span class="dot" onclick="currentSlide(3)"></span>
+                <span class="dot" onclick="currentSlide(4)"></span>
+                <span class="dot" onclick="currentSlide(5)"></span>
+            </div>
+            {# Must stay here, after the slides: home.js calls showSlides() immediately. #}
+            <script src="{% static 'js/home.js' %}">
+            </script>
+
+
+
+        </section>
+        <section class="about" id="origin" style="background: scroll;">
+            {{ site.about_text|linebreaks }}
+        </section>
+        <section id="form-loc">
+            <div class="format">
+                <h2>Get in touch!</h2><hr >
+                <form action="{% url 'contact:submit' %}" method="post" autocomplete="on">
+                    {% csrf_token %}
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required maxlength="100">
+                    <br>
+                    <label for="mnum">Contact No.:</label>
+                    <input type="tel" id="mnum" name="phone" value="+91" maxlength="13" required>
+                    <br>
+                    <label for="msg">Message:</label>
+                    <textarea rows="6" cols="70" id="msg" name="message" placeholder="Type your message here..." required></textarea>
+                    <input style="margin-top: 10px;border: 2px solid #000; border-radius: 10px;" type="submit" value="Submit" >
+                </form>
+            </div>
+            <div class="loc-gmaps">
+               <iframe src="{{ site.map_embed_url }}" width="560" height="360" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </section>
+{% endblock %}

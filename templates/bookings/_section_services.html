@@ -1,0 +1,20 @@
+{% load belleza %}
+<fieldset class="booking-section" id="section-services"{% if form.services.errors %} aria-describedby="id_services-error"{% endif %}>
+    <legend><h2>Services</h2></legend>
+    <p class="section-hint">Choose one or more.</p>
+    {% include "bookings/_field_errors.html" with field=form.services %}
+    {% for category in categories %}{% with services=category.services.all %}{% if services %}
+    <fieldset class="service-group">
+        <legend>{{ category.name }}</legend>
+        <div class="chip-grid">
+            {% for service in services %}
+            <input type="checkbox" class="chip-input" id="service-{{ service.pk }}" name="services" value="{{ service.pk }}" data-minutes="{{ service.duration_minutes }}" data-price="{{ service.price|stringformat:'s' }}"{% if service.pk|stringformat:"s" in selected_service_ids %} checked{% endif %}>
+            <label class="chip" for="service-{{ service.pk }}">
+                <span class="chip-title">{{ service.name }}</span>
+                <span class="chip-meta">{{ service.duration_minutes|duration }} · {{ service.price|rupees }}</span>
+            </label>
+            {% endfor %}
+        </div>
+    </fieldset>
+    {% endif %}{% endwith %}{% endfor %}
+</fieldset>

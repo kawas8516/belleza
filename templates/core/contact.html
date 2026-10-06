@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contact Us{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/contact.css' %}">{% endblock %}
+
+{% block content %}
+    <section class="beginning contact-section" id="tag-begin">
+        {% include "partials/_nav.html" %}
+
+        <div class="content-container">
+            <div class="contact-container">
+                <h1>Contact Us</h1>
+                <div class="contact-options">
+                    <div class="contact-option">1. 📣 Share Your Feedback</div>
+                    <div class="contact-option">2. 💬 Have a Chat</div>
+                    <div class="contact-option">3. 💌 Drop a Message</div>
+                </div>
+                <p>Feel free to reach out for any inquiries or assistance.</p>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block footer %}{% include "partials/_footer.html" with variant="contact" %}{% endblock %}

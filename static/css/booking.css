@@ -1,0 +1,584 @@
+/*
+  Booking pages (bookings/booking_form, booking_success, my_bookings).
+  The page look -- photo background, translucent panel, Arial -- is the
+  original registration.html style, kept on purpose. These pages
+  deliberately don't load main.css.
+*/
+
+:root {
+  /* Inks are checked against the worst case: the 0.7 white panel over the
+     photo's black areas composites to ~rgb(178,178,178). #444 = 4.6:1 and
+     --error = 4.6:1 there; anything lighter fails WCAG AA for small text. */
+  --ink: #222;
+  --ink-heading: #333;
+  --ink-muted: #444;
+  --line: #8a8a8a;
+  --line-soft: rgba(0, 0, 0, 0.12);
+  --surface: #fff;
+  --placeholder: #6b6b6b;
+  --chip-bg: rgba(255, 255, 255, 0.85);
+  --chip-hover: #fff;
+  --chip-pressed: #e8e8e8;
+  --selected-bg: #333;
+  --selected-ink: #fff;
+  --selected-meta: #ddd;
+  --primary-hover: #111;
+  --primary-active: #000;
+  --secondary-hover: #f0f0f0;
+  --error: #851717;
+  --error-bg: #fdecea;
+  --focus: #222;
+  --bar-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+  --bar-height: 72px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --radius: 8px;
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-image: url('https://images.pexels.com/photos/13068359/pexels-photo-13068359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+  background-size: cover;
+  background-position: center;
+  font-family: 'Arial', sans-serif;
+  color: black;
+}
+
+.registration-container {
+  max-width: 600px;
+  margin: 50px auto;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+html {
+  scroll-padding-bottom: calc(var(--bar-height) + var(--space-4));
+  scroll-padding-top: var(--space-4);
+}
+
+@media (max-width: 640px) {
+  .registration-container {
+    margin: var(--space-4);
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- Booking form ---------------------------------------------------- */
+
+.booking h1 {
+  margin: var(--space-2) 0 var(--space-2);
+  text-wrap: balance;
+}
+
+.booking-lead {
+  margin: 0 auto var(--space-6);
+  max-width: 44ch;
+  text-align: center;
+  color: var(--ink-muted);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  color: var(--ink);
+}
+
+.booking-section {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.booking-section > legend {
+  padding: 0;
+  margin-bottom: var(--space-3);
+}
+
+.booking-section > legend h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1.3;
+  color: var(--ink-heading);
+  text-wrap: balance;
+}
+
+.section-hint {
+  margin: calc(var(--space-2) * -1) 0 var(--space-3);
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+
+.service-group {
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.service-group:last-child {
+  margin-bottom: 0;
+}
+
+.service-group > legend {
+  padding: 0;
+  margin-bottom: var(--space-2);
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--ink-muted);
+}
+
+/* Back link */
+
+.booking-back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: calc(var(--space-2) * -1) 0 0 calc(var(--space-2) * -1);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius);
+  color: var(--ink-muted);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.booking-back:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+.booking-back:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Text inputs */
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-3);
+}
+
+.field--wide {
+  grid-column: 1 / -1;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.field label {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--ink-heading);
+}
+
+.booking-form input[type="text"],
+.booking-form input[type="email"],
+.booking-form input[type="tel"],
+.booking-form input[type="date"] {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px; /* 16px keeps iOS from zooming on focus */
+}
+
+.booking-form input::placeholder {
+  color: var(--placeholder);
+}
+
+.booking-form input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.booking-form input[aria-invalid="true"] {
+  border-color: var(--error);
+}
+
+/* Chips: checkbox/radio input + label. The input stays in the accessibility
+   tree and keyboard order; the label is the visible control. */
+
+.chip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-2);
+}
+
+.chip-grid--slots {
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+}
+
+.chip-input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+}
+
+.chip {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--chip-bg);
+  color: var(--ink);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out),
+    border-color 150ms var(--ease-out);
+}
+
+.chip-title {
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.chip-meta {
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--ink-muted);
+  transition: color 150ms var(--ease-out);
+}
+
+.chip--slot {
+  align-items: center;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (hover: hover) {
+  .chip-input:not(:disabled) + .chip:hover {
+    background: var(--chip-hover);
+    border-color: var(--ink);
+  }
+}
+
+.chip-input:not(:disabled) + .chip:active {
+  background: var(--chip-pressed);
+}
+
+.chip-input:checked + .chip {
+  background: var(--selected-bg);
+  border-color: var(--selected-bg);
+  color: var(--selected-ink);
+}
+
+.chip-input:checked + .chip .chip-meta {
+  color: var(--selected-meta);
+}
+
+.chip-input:focus-visible + .chip {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.chip-input:disabled + .chip {
+  opacity: 0.45;
+  cursor: not-allowed;
+  text-decoration: line-through;
+  background: transparent;
+}
+
+/* "Times refresh automatically" only makes sense with JS; without it the
+   Show times button is the way to refresh. booking.js adds .js to <html>. */
+.hint-js {
+  display: none;
+}
+
+.js .hint-js {
+  display: block;
+}
+
+.js .hint-nojs {
+  display: none;
+}
+
+/* Slots are stale after a keyboard stylist change until Show times is used. */
+.chip-grid--slots[data-stale] {
+  opacity: 0.5;
+}
+
+.stale-hint {
+  margin: 0 0 var(--space-3);
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--ink-heading);
+}
+
+/* Date row */
+
+.date-row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.date-row .field {
+  flex: 1;
+  max-width: 260px;
+}
+
+.empty-hint {
+  margin: 0;
+  padding: var(--space-4);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  color: var(--ink-muted);
+  text-align: center;
+}
+
+.chip-grid--slots + .empty-hint {
+  margin-top: var(--space-3);
+}
+
+/* Buttons */
+
+.button-primary,
+.button-secondary {
+  min-height: 44px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius);
+  font: inherit;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out);
+}
+
+.button-primary {
+  border: 1px solid var(--selected-bg);
+  background: var(--selected-bg);
+  color: var(--selected-ink);
+}
+
+.button-primary:hover {
+  background: var(--primary-hover);
+}
+
+.button-primary:active {
+  background: var(--primary-active);
+}
+
+.button-secondary {
+  border: 1px solid var(--ink);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.button-secondary:hover {
+  background: var(--secondary-hover);
+}
+
+.button-primary:focus-visible,
+.button-secondary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.button-primary[aria-disabled="true"] {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.button-primary:disabled,
+.button-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Summary bar: sticks to the bottom of the viewport while the form scrolls. */
+
+.summary-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  /* Bleed to the panel's edges (its padding is 20px). */
+  margin: 0 -20px -20px;
+  padding: var(--space-3) 20px;
+  border-top: 1px solid var(--line-soft);
+  border-radius: 0 0 10px 10px;
+  background: var(--surface);
+  box-shadow: var(--bar-shadow);
+}
+
+.summary-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.summary-text strong {
+  white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+  :root {
+    --bar-height: 112px; /* summary text stacked above a full-width button */
+  }
+
+  .summary-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+  }
+
+  .summary-bar .button-primary {
+    width: 100%;
+  }
+
+  .date-row {
+    flex-wrap: wrap;
+  }
+
+  .date-row .field {
+    max-width: none;
+    flex-basis: 100%;
+  }
+}
+
+/* Errors */
+
+.error-summary {
+  margin: 0 0 var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--error);
+  border-radius: var(--radius);
+  background: var(--error-bg);
+  color: var(--ink);
+}
+
+.error-summary:focus {
+  outline: 2px solid var(--error);
+  outline-offset: 2px;
+}
+
+.error-summary-title {
+  margin: 0 0 var(--space-2);
+  font-weight: bold;
+}
+
+.error-summary ul {
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+.error-summary a {
+  color: var(--error);
+}
+
+.booking-form .form-error {
+  margin: var(--space-1) 0 0;
+  color: var(--error);
+  font-weight: bold;
+}
+
+/* Section-level errors (services, stylist) sit above a group, not under a field. */
+.booking-section > .form-error {
+  margin: 0 0 var(--space-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip,
+  .chip-meta,
+  .button-primary,
+  .button-secondary {
+    transition: none;
+  }
+}
+
+/* ---- Success / my-bookings pages -------------------------------------- */
+
+.booking-summary dt {
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.booking-summary dd {
+  margin: 0;
+}
+
+.booking-list {
+  list-style: none;
+  padding: 0;
+}
+
+.booking-list li {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.booking-list li:last-child {
+  border-bottom: none;
+}
+
+.booking-status {
+  text-transform: capitalize;
+  font-weight: bold;
+}
+
+.booking-cancel {
+  display: inline;
+}
+
+.booking-links {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.booking-links a {
+  color: #333;
+}

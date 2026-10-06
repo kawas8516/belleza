@@ -1,0 +1,25 @@
+{% load belleza %}
+<div class="nav">
+    <div class="logo">
+        {{ site.brand_name }}
+    </div>
+    <div class="middle-part">
+        <ul>
+            <li>{% nav_link "core:home" "Home" %}</li>
+            <li>{% nav_link "core:home" "About" anchor="#origin" %}</li>
+            <li>{% nav_link "services:list" "Services" %}</li>
+            <li>{% nav_link "core:contact" "Contact" %}</li>
+        </ul>
+    </div>
+    <div class="button">
+        {% if user.is_authenticated %}
+            <a href="{% url 'bookings:mine' %}">My bookings</a>
+            <form method="post" action="{% url 'accounts:logout' %}" class="nav-logout">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        {% else %}
+            <a href="{% url 'accounts:login' %}">Login</a>
+        {% endif %}
+    </div>
+</div>

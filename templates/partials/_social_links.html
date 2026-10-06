@@ -1,0 +1,8 @@
+<br>
+{% for link in links %}
+<a href="{{ link.url }}">
+    <img src="{{ link.icon_src }}" alt="{{ link.name }}" width="10px" height="10px">
+    <span>{{ link.name }}</span>
+</a>
+<br>
+{% endfor %}

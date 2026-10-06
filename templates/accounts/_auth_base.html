@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{# Auth pages: no Google Fonts, own minimal nav, no footer -- as before. #}
+{% block fonts %}{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/auth.css' %}">{% endblock %}
+
+{% block content %}
+    <div class="nav">
+        <div class="logo">
+            <a href="{% url 'core:home' %}">
+           Welcome To Belleza </a>
+        </div>
+    </div>
+    <div class="main">
+    {% block auth_form %}{% endblock %}
+    </div>
+{% endblock %}
+
+{% block footer %}{% endblock %}

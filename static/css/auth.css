@@ -1,0 +1,311 @@
+/*
+  Layout and components specific to login.html / signup.html. Ported from
+  the Colorlib template, with the icon-font, jQuery-dependent checkbox glyph,
+  and dead unused-asset rules replaced -- everything else keeps the same
+  numbers Colorlib shipped (colors/spacing already fixed earlier).
+*/
+
+.main {
+  padding: 100px 0;
+}
+
+body {
+  background-image: url(https://images.pexels.com/photos/705255/pexels-photo-705255.jpeg);
+  background-size: cover;
+  background-position: center;
+}
+
+.container {
+  width: 900px;
+  background-color: rgba(255, 255, 255, 0.7);
+  margin: 0 auto;
+  box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+}
+
+@media screen and (max-width: 1200px) {
+  .container {
+    width: calc(100% - 30px);
+    max-width: 100%;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .container {
+    max-width: 1200px;
+  }
+}
+
+.signup-content, .signin-content {
+  display: flex;
+  padding: 64px;
+  gap: 64px;
+  align-items: center;
+}
+
+.signup-form, .signup-image, .signin-form, .signin-image {
+  flex: 1 1 0%;
+  overflow: hidden;
+  margin: 0;
+}
+
+.form-title {
+  margin-bottom: 33px;
+}
+
+figure {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+figure img {
+  max-width: 100%;
+  border-radius: 12px;
+}
+
+.form-submit {
+  display: inline-block;
+  background: #090909a0;
+  color: #fff;
+  border: none;
+  width: auto;
+  padding: 15px 39px;
+  border-radius: 5px;
+  margin-top: 25px;
+  cursor: pointer;
+}
+.form-submit:hover {
+  background: #4292dc;
+}
+
+.signup-image-link {
+  font-size: medium;
+  color: #222;
+  display: block;
+  text-align: center;
+}
+
+.term-service {
+  font-size: 13px;
+  color: #222;
+}
+
+.register-form {
+  width: 100%;
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: 25px;
+  overflow: hidden;
+}
+.form-group:last-child {
+  margin-bottom: 0px;
+}
+
+/* Icon shown at the left edge of each field (replaces the Colorlib icon
+   font -- these are the SVGs in static/img/icon-*.svg). */
+.form-icon {
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+}
+.form-icon--account {
+  width: 18px;
+  height: 18px;
+}
+
+input {
+  width: 100%;
+  display: block;
+  border: none;
+  border-radius: 10px;
+  padding: 6px 30px;
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+}
+input::placeholder {
+  color: #999;
+}
+input:focus {
+  border-bottom: 1px solid #222;
+}
+input:focus::placeholder {
+  color: #222;
+}
+
+/* Custom checkbox: same visual result as the Colorlib version, but the
+   checkmark is drawn with CSS (rotated border) instead of an icon-font glyph
+   pulled from a font file we no longer load. */
+input[type=checkbox]:not(old) {
+  width: 2em;
+  margin: 0;
+  padding: 0;
+  font-size: 1em;
+  display: none;
+}
+
+input[type=checkbox]:not(old) + label {
+  display: inline-block;
+  line-height: 1.5em;
+  margin-top: 6px;
+}
+
+input[type=checkbox]:not(old) + label > span {
+  position: relative;
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  margin-right: 15px;
+  margin-bottom: 3px;
+  border: 1px solid #999;
+  border-radius: 2px;
+  background: white;
+  vertical-align: bottom;
+}
+
+input[type=checkbox]:not(old):checked + label > span:before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 1px;
+  width: 5px;
+  height: 8px;
+  border: solid #222;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.agree-term {
+  display: inline-block;
+  width: auto;
+}
+
+label {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #222;
+  padding-left: 10px;
+}
+
+.label-agree-term {
+  position: relative;
+  top: 0;
+  transform: translateY(0);
+}
+
+.social-login {
+  display: flex;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.social-label {
+  display: inline-block;
+  margin-right: 15px;
+  font-size: medium;
+}
+
+.socials {
+  display: flex;
+  list-style: none;
+}
+
+.socials li {
+  padding: 5px;
+}
+.socials li:last-child {
+  margin-right: 0px;
+}
+.socials li a {
+  /* The colour square lives here, not on the <img> -- CSS filter (below)
+     rasterizes the whole element it's applied to, background included, so
+     brightness(0)/invert(1) on the img would have flattened these to white
+     too if it were on the same element carrying the background. */
+  display: block;
+  width: 30px;
+  height: 30px;
+  padding: 8px;
+  border-radius: 5px;
+  text-decoration: none;
+  transform: translateZ(0);
+  transition-duration: 0.3s;
+  transition-property: transform;
+  transition-timing-function: ease-out;
+}
+.socials li a img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.socials li:hover a {
+  transform: scale(1.3) translateZ(0);
+}
+
+.social-facebook {
+  background: #3b5998;
+}
+.social-facebook img {
+  /* fb.svg ships with a dark fill (reused as-is); force it to render white
+     on the brand-colour square instead of drawing a near-duplicate asset. */
+  filter: brightness(0) invert(1);
+}
+.social-twitter {
+  background: #1da0f2;
+}
+.social-twitter img {
+  filter: brightness(0) invert(1);
+}
+.social-google {
+  background: #e72734;
+}
+
+@media screen and (max-width: 768px) {
+  .signup-content, .signin-content {
+    flex-direction: column;
+    justify-content: center;
+    /* Smaller than the desktop 64px: same value on both pages, just scaled
+       down for the narrower viewport instead of each side inventing its own
+       number. */
+    padding: 40px 24px;
+    gap: 40px;
+  }
+
+  .signin-image {
+    order: 2;
+  }
+
+  .signup-form, .signup-image, .signin-form, .signin-image {
+    /* Column direction: let each block size to its content instead of an
+       even flex-basis split, which is what "flex: 1 1 0%" would force. */
+    flex: 1 1 auto;
+  }
+
+  .social-login {
+    justify-content: center;
+  }
+
+  .form-button {
+    text-align: center;
+  }
+
+  .signin-form {
+    order: 1;
+  }
+
+  .form-title {
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .social-login {
+    flex-direction: column;
+  }
+
+  .social-label {
+    margin-right: 0px;
+    margin-bottom: 10px;
+  }
+}

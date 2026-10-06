@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Services{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/service.css' %}">{% endblock %}
+{% block extra_head_js %}<script defer src="{% static 'js/service.js' %}"></script>{% endblock %}
+
+{% block content %}
+    <section class="beginning" id="tag-begin">
+        {% include "partials/_nav.html" %}
+    </section>
+    <header>
+        <h1>Welcome to Our Beauty Services</h1>
+    </header>
+    <article>
+    <div id="overall">
+        <a href="{% url 'bookings:create' %}" class="services-link">
+        <div class="services">
+            {% include "services/_cards.html" %}
+    </div>
+    </a>
+    </div>
+    </article>
+{% endblock %}

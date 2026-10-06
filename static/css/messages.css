@@ -1,0 +1,58 @@
+/*
+  Flash messages (Django messages framework), loaded on every page from
+  base.html. Fixed-position so a message never shifts page layout; it only
+  appears after a form action (contact sent, booking cancelled, etc.).
+*/
+
+.messages {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000;
+  max-width: min(360px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: messages-out 0.4s ease 6s forwards;
+}
+
+.message {
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #222;
+  color: whitesmoke;
+  font-family: 'Poppins', Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.message--success {
+  background: #2e5b3f;
+}
+
+.message--error {
+  background: #7a2a2a;
+}
+
+@keyframes messages-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .messages {
+    animation-duration: 0s;
+  }
+}
+
+/* Inline field errors on the auth and booking forms. */
+.form-error {
+  margin: 4px 0 8px;
+  color: #c62828;
+  font-size: 13px;
+  line-height: 1.4;
+}

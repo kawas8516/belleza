@@ -1,0 +1,32 @@
+<fieldset class="booking-section" id="section-time"{% if form.start_time.errors %} aria-describedby="id_start_time-error"{% endif %}>
+    <legend><h2>Date &amp; time</h2></legend>
+    <div class="date-row">
+        <div class="field">
+            <label for="id_date">Date</label>
+            <input type="date" id="id_date" name="date" min="{{ date_min|date:'Y-m-d' }}" max="{{ date_max|date:'Y-m-d' }}" value="{% if selected_date %}{{ selected_date|date:'Y-m-d' }}{% else %}{{ form.date.value|default_if_none:'' }}{% endif %}" required data-refresh{% if form.date.errors %} aria-invalid="true" aria-describedby="id_date-error"{% endif %}>
+        </div>
+        <button type="submit" class="button-secondary" formmethod="get" formnovalidate formaction="{% url 'bookings:create' %}#section-time" data-show-times>Show times</button>
+    </div>
+    {% include "bookings/_field_errors.html" with field=form.date %}
+    <p class="section-hint hint-js">Open times update when you pick a date or tap a stylist.</p>
+    <p class="section-hint hint-nojs">After changing the date or stylist, press Show times.</p>
+    <p class="stale-hint" data-stale-hint hidden>Stylist changed. Press Show times to update the open times.</p>
+
+    {% if slots %}
+    <p class="section-hint" id="slots-label">
+        Open times on {{ selected_date|date:"l, j F" }}{% for stylist in stylists %}{% if stylist.pk|stringformat:"s" == selected_stylist %} with {{ stylist.name }}{% endif %}{% endfor %}
+    </p>
+    <div class="chip-grid chip-grid--slots" role="radiogroup" aria-labelledby="slots-label">
+        {% for slot in slots %}
+        <input type="radio" class="chip-input" id="slot-{{ slot.value|cut:':' }}" name="start_time" value="{{ slot.value }}" data-free-minutes="{{ slot.free_minutes }}" data-reason="{{ slot.reason }}"{% if not slot.available %} disabled{% endif %}{% if slot.value == selected_time %} checked{% endif %}>
+        <label class="chip chip--slot" for="slot-{{ slot.value|cut:':' }}">{{ slot.value }}<span class="visually-hidden" data-slot-reason>{% if slot.reason == "past" %}, already passed{% elif slot.reason == "booked" %}, stylist booked{% elif slot.reason == "short" %}, too short for the selected services{% endif %}</span></label>
+        {% endfor %}
+    </div>
+    <p class="empty-hint" data-no-slots{% if has_open_slot %} hidden{% endif %}>No open times on this day. Try another date{% if selected_stylist %} or choose Any stylist{% endif %}.</p>
+    {% elif date_notice %}
+    <p class="empty-hint">{{ date_notice }}</p>
+    {% else %}
+    <p class="empty-hint">Pick a date to see open times.</p>
+    {% endif %}
+    {% include "bookings/_field_errors.html" with field=form.start_time %}
+</fieldset>

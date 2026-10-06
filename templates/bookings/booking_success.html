@@ -1,0 +1,28 @@
+{% extends "bookings/_booking_base.html" %}
+
+{% block title %}Booking received &mdash; Belleza{% endblock %}
+
+{% block content %}
+  <div class="registration-container">
+    <h1>Booking received</h1>
+    <p>Thanks, {{ booking.contact_name }}. We'll confirm your appointment shortly.</p>
+
+    <dl class="booking-summary">
+        <dt>When</dt>
+        <dd>{{ booking.date|date:"l, j F Y" }}, {{ booking.start_time|time:"H:i" }}&ndash;{{ booking.end_time|time:"H:i" }}</dd>
+        <dt>Services</dt>
+        <dd>{{ booking.services.all|join:", " }}</dd>
+        <dt>Stylist</dt>
+        <dd>{{ booking.stylist|default:"Any available stylist" }}</dd>
+        <dt>Total</dt>
+        <dd>&#8377;{{ booking.total_price }}</dd>
+        <dt>Status</dt>
+        <dd class="booking-status">{{ booking.get_status_display }}</dd>
+    </dl>
+
+    <p class="booking-links">
+        <a href="{% url 'bookings:mine' %}">My bookings</a> &middot;
+        <a href="{% url 'core:home' %}">Back to Belleza</a>
+    </p>
+  </div>
+{% endblock %}

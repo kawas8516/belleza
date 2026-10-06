@@ -1,0 +1,25 @@
+{% extends "bookings/_booking_base.html" %}
+{% load static %}
+
+{% block title %}Book an appointment &mdash; Belleza{% endblock %}
+
+{% block extra_head_js %}<script defer src="{% static 'js/booking.js' %}"></script>{% endblock %}
+
+{% block content %}
+  <main class="registration-container booking">
+    <a class="booking-back" href="{% url 'core:home' %}">&larr; Back to Belleza</a>
+    <h1>Book an appointment</h1>
+    <p class="booking-lead">Pick your services, a stylist and a time. You'll see the total before you book.</p>
+
+    {% include "bookings/_error_summary.html" %}
+
+    <form method="post" action="{% url 'bookings:create' %}" class="booking-form" id="booking-form" novalidate data-booking-form>
+        {% csrf_token %}
+        {% include "bookings/_section_details.html" %}
+        {% include "bookings/_section_services.html" %}
+        {% include "bookings/_section_stylist.html" %}
+        {% include "bookings/_section_datetime.html" %}
+        {% include "bookings/_summary_bar.html" %}
+    </form>
+  </main>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% if error_links %}
+<div class="error-summary" role="alert" tabindex="-1" id="error-summary">
+    <p class="error-summary-title">Check {{ error_links|length|pluralize:"this,these" }} before booking:</p>
+    <ul>
+        {% for error in error_links %}
+        <li><a href="#{{ error.anchor }}">{{ error.message }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}

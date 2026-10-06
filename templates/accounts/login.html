@@ -1,0 +1,52 @@
+{% extends "accounts/_auth_base.html" %}
+{% load static %}
+
+{% block title %}Log in &mdash; Belleza{% endblock %}
+
+{% block auth_form %}
+    <!-- Sign in form -->
+        <section class="sign-in">
+            <div class="container">
+                <div class="signin-content">
+                    <div class="signin-image">
+                        <figure><img src="{% static 'img/login-signin.jpg' %}" alt="Belleza salon interior"></figure>
+                        <a href="{% url 'accounts:signup' %}" class="signup-image-link">Create an account</a>
+                    </div>
+
+                    <div class="signin-form">
+                        <h2 class="form-title">Log in</h2>
+                        <form method="POST" class="register-form" id="login-form" novalidate>
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ next }}">
+                            {% for error in form.non_field_errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                            <div class="form-group">
+                                <label for="id_username"><img class="form-icon form-icon--account" src="{% static 'img/icon-account.svg' %}" alt=""></label>
+                                <input type="email" name="username" id="id_username" placeholder="Your Email" value="{{ form.username.value|default_if_none:'' }}" autocomplete="email" required/>
+                            </div>
+                            {% for error in form.username.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                            <div class="form-group">
+                                <label for="id_password"><img class="form-icon" src="{% static 'img/icon-lock.svg' %}" alt=""></label>
+                                <input type="password" name="password" id="id_password" placeholder="Password" autocomplete="current-password" required/>
+                            </div>
+                            {% for error in form.password.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                            <div class="form-group">
+                                <input type="checkbox" name="remember_me" id="id_remember_me" class="agree-term" {% if form.remember_me.value %}checked{% endif %}/>
+                                <label for="id_remember_me" class="label-agree-term"><span><span></span></span>Remember me</label>
+                            </div>
+                            <div class="form-group form-button">
+                                <input type="submit" name="signin" id="signin" class="form-submit" value="Log in"/>
+                            </div>
+                        </form>
+                        <div class="social-login">
+                            <span class="social-label">Or login with</span>
+                            <ul class="socials">
+                                <li><a href="#" class="social-facebook"><img src="{% static 'img/fb.svg' %}" alt="Facebook"></a></li>
+                                <li><a href="#" class="social-twitter"><img src="{% static 'img/x.svg' %}" alt="Twitter"></a></li>
+                                <li><a href="#" class="social-google"><img src="{% static 'img/icon-google.svg' %}" alt="Google"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+{% endblock %}

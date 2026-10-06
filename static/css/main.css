@@ -1,0 +1,255 @@
+/*
+  Shared foundation for every page: core/home, services/service_list,
+  core/contact, accounts/login, accounts/signup. Each also loads its own css for
+  page-specific rules.
+
+  Fonts (Poppins/Inter/Space Mono) load via a Google Fonts <link> in each
+  page's <head> -- not from here. Keeping the @font-face out of CSS and in
+  one <link> tag is what index.html already did for Poppins; this file
+  previously self-hosted Poppins only, which meant Inter and Space Mono
+  (referenced in nav links and buttons on every page) never actually loaded
+  and silently fell back to browser defaults on every page since day one.
+*/
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Design tokens -- reused instead of re-deriving these numbers per page. */
+:root {
+  --color-ink: #222;
+  --color-paper: whitesmoke;
+  --color-nav-bg: rgba(0, 0, 0, 0.375);
+  --space-sm: 24px;
+  --space-md: 40px;
+  --space-lg: 64px;
+}
+
+/* Global element defaults (from Colorlib's reset layer -- generic, not
+   Colorlib-specific, so they stay). Note: this h2 rule is what actually
+   sizes .form-title on the auth pages (a <h2>) -- it's load-bearing, not
+   decorative. */
+a:focus, a:active {
+  text-decoration: none;
+  outline: none;
+  transition: all 300ms ease 0s;
+}
+
+input, select, textarea {
+  outline: none;
+  appearance: unset !important;
+}
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+  appearance: none !important;
+  margin: 0;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  box-shadow: none !important;
+}
+
+input[type=checkbox] {
+  appearance: checkbox !important;
+}
+
+input[type=radio] {
+  appearance: radio !important;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+figure {
+  margin: 0;
+}
+
+p {
+  margin-bottom: 0px;
+  font-size: 15px;
+  color: #777;
+}
+
+h2 {
+  line-height: 1.66;
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+  color: #222;
+  font-family: 'Poppins', sans-serif;
+  font-size: 36px;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--color-ink);
+  font-weight: 400;
+}
+
+/* Nav shell, used (via .nav/.middle-part) by every page including
+   contact.html, which used to have its own separate <header><nav> markup
+   and duplicate CSS instead of sharing this. */
+.nav {
+  border: none;
+  position: fixed;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 98%;
+  padding: 10px;
+  margin: 0.5% 1%;
+  background-color: var(--color-nav-bg);
+  border-radius: 10px;
+}
+
+.logo {
+  font-size: 1.4rem;
+  color: var(--color-paper);
+}
+
+.logo a {
+  text-decoration: none;
+  color: var(--color-paper);
+}
+
+.logo a:hover {
+  text-decoration: underline;
+}
+
+.middle-part ul {
+  list-style: none;
+}
+
+.middle-part ul li {
+  display: inline;
+  font-weight: bold;
+  padding: 0 5px;
+}
+
+.middle-part ul a {
+  color: var(--color-paper);
+  font-family: 'Inter', sans-serif;
+  font-size: 1.2rem;
+  text-decoration: none;
+}
+
+.button {
+  border: 3px solid white;
+  font-size: 1.4rem;
+  font-family: 'Space Mono', monospace;
+  color: rgb(245, 245, 245);
+  padding: 2px 5px;
+  border-radius: 13px;
+}
+
+.button > a {
+  text-decoration: none;
+  color: white;
+}
+
+/* Logged-in nav: "My bookings" link plus logout, which must be a POST form.
+   The button is reset to read as a link, matching the anchor beside it. */
+.nav-logout {
+  display: inline;
+}
+
+.nav-logout button {
+  margin-left: 8px;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: white;
+  cursor: pointer;
+}
+
+.nav-logout button:hover {
+  text-decoration: underline;
+}
+
+.active, .dot:hover {
+  padding: 5px;
+  border: solid white 1px;
+  border-radius: 10px;
+}
+
+/* Footer, identical across index/service/contact/login/signup. Previously
+   duplicated three times (styles.css, service.css, contact.css) with small
+   drift between copies (service.css's version had position:absolute, the
+   others didn't) -- this is the version matching index.html's current
+   on-screen output, since that's the one to preserve. */
+#foot {
+  bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0px;
+  width: 100%;
+  color: white;
+  background-color: black;
+}
+
+#foot img {
+  width: 20px;
+  height: 20px;
+}
+
+.cname {
+  border-right: 30px;
+  font-size: 16px;
+}
+
+.cname > a {
+  color: white;
+  text-decoration: none;
+}
+
+.cname span {
+  color: white;
+}
+
+.cname a {
+  text-decoration: none;
+  color: white;
+}
+
+/* Service cards, shared by the home page's featured-services section and
+   the full services page -- previously an identical block duplicated
+   verbatim in styles.css and service.css. */
+.service-item {
+  width: 300px;
+  height: auto;
+  border-color: #333;
+  background-color: whitesmoke;
+  padding: 20px;
+  border: 2px solid black;
+  border-radius: 8px;
+}
+
+.service-item img {
+  height: 300px;
+  width: 100%;
+}
+
+.service-title {
+  font-size: 24px;
+  color: #333;
+  text-decoration: none;
+}
+
+.service-description {
+  font-size: 16px;
+  color: black;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-decoration: none;
+}

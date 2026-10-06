@@ -1,0 +1,8 @@
+{# Featured category cards, shared by the home page and the services page. #}
+{% for category in categories %}
+<div class="service-item">
+    <h2 class="service-title">{{ category.display_title }}</h2>
+    <p class="service-description">{{ category.description }}</p>
+    <img src="{{ category.image_url }}" alt="{{ category.display_title }}">
+</div>
+{% endfor %}

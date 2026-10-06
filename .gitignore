@@ -23,4 +23,30 @@ dist/
 # Env / logs
 .env
 .env.*
+!.env.example
 *.log
+
+# Django / Python
+db.sqlite3
+db.sqlite3-journal
+*.sqlite3
+media/
+staticfiles/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual envs (the project venv lives outside the repo: ../belleza-venv)
+.venv/
+venv/
+env/
+
+# Test / lint caches and coverage
+.pytest_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local Claude Code settings
+.claude/settings.local.json

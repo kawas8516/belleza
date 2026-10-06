@@ -38,3 +38,21 @@ misaligned spacing.
 
 Standard good practice: WCAG AA contrast, visible focus states, reduced-motion
 support, proper label/input association.
+
+## Implementation Notes
+
+- The site is moving from static HTML to Django (see README.md). Pages now
+  live in `templates/`, assets in `static/`.
+- The move is structural only: every page must look the same as the
+  original static version when logged out. The new UI is limited to the
+  logged-in nav ("My bookings" / Logout), flash-message toasts, inline form
+  errors, and the booking success / my-bookings pages, which reuse the
+  booking page's look.
+- Login is by email; the login field placeholder reads "Your Email".
+- Site copy and contact details live in the admin (Site settings), not in
+  templates. The footer copyright year updates automatically (2023–current).
+- The booking page (`/book/`) was redesigned at the user's request, an
+  explicit exception to the no-redesign rule: grouped sections, chip
+  selectors, open-time slots and a sticky price/duration summary. It keeps
+  the original registration look (photo background, translucent panel,
+  Arial).

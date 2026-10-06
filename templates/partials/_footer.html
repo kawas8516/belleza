@@ -1,0 +1,25 @@
+{% load static belleza %}
+{# variant="contact" keeps contact page's footer: phone icon and local X icon. #}
+<footer>
+    <div id="foot">
+        <div class="cname">
+            <h2 style="font-family: 'Space Mono', monospace;font-weight: bold;font-size: 28px;float: left;" >{{ site.footer_brand }}</h2>
+        </div>
+        <div class="cname" style="width: 450px; text-align: center;">
+            <span>{{ site.address }}</span>
+            {% if variant == "contact" %}
+            <br><img src="{% static 'img/call-small.svg' %}" alt="Phone" width="10px" height="5px">
+            <span>
+                {{ site.phone }}
+            </span>
+            {% else %}
+            <br> {{ site.phone }}
+            {% endif %}
+            <br> {{ site.email }}
+            <br> &copy; {% copyright_years site.copyright_start_year %} All Rights Reserved.
+        </div>
+        <div class="cname"{% if variant != "contact" %} style="border-right: 30px; font-size: 16px;"{% endif %}>
+            {% social_links variant %}
+        </div>
+    </div>
+</footer>
