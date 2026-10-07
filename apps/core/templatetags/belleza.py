@@ -15,7 +15,7 @@ def nav_link(context, view_name, label, anchor=""):
     href = reverse(view_name) + anchor
     match = getattr(context.get("request"), "resolver_match", None)
     if not anchor and match and match.view_name == view_name:
-        return format_html('<a class="active" href="{}">{}</a>', href, label)
+        return format_html('<a class="active" aria-current="page" href="{}">{}</a>', href, label)
     return format_html('<a href="{}">{}</a>', href, label)
 
 

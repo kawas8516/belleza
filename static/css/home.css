@@ -29,10 +29,18 @@ main {
     position: relative;
     height: 100%;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.5);
+    /* 0.58 (was 0.5): over the white parts of the photo the box composites to
+       ~rgb(107,107,107), giving the white subtitle 5.3:1 (WCAG AA). */
+    background-color: rgba(0, 0, 0, 0.58);
     padding: 20px;
     border-radius: 10px;
     color: white;
+}
+
+/* The hero subtitle inherited main.css's p { color: #777 }: grey on a dark
+   translucent box, nearly invisible. */
+.c-begin-box p {
+    color: #fff;
 }
 
 .explore-button {

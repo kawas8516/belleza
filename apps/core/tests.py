@@ -67,7 +67,9 @@ class TemplateTagTests(TestCase):
         html = Template(
             '{% load belleza %}{% nav_link "services:list" "Services" %}|{% nav_link "core:home" "Home" %}'
         ).render(Context({"request": request}))
-        self.assertEqual(html, '<a class="active" href="/services/">Services</a>|<a href="/">Home</a>')
+        self.assertEqual(
+            html, '<a class="active" aria-current="page" href="/services/">Services</a>|<a href="/">Home</a>'
+        )
 
     def test_nav_anchor_never_active(self):
         request = RequestFactory().get("/")
@@ -82,3 +84,24 @@ class TemplateTagTests(TestCase):
         contact = self.client.get(reverse("core:contact")).content.decode()
         self.assertIn("freepik.com", default)
         self.assertIn("/static/img/x.svg", contact)
+
+
+class NavBarTests(TestCase):
+    def test_logged_out_nav(self):
+        response = self.client.get(reverse("core:home"))
+        self.assertContains(response, '<nav class="nav" aria-label="Main">')
+        self.assertContains(response, '<a href="/">Belleza</a>')
+        self.assertContains(response, '<a class="nav-button" href="/account/login/">Login</a>')
+        self.assertContains(response, 'aria-current="page" href="/">Home</a>')
+        self.assertNotContains(response, "Log out")
+
+    def test_logged_in_nav(self):
+        from django.contrib.auth import get_user_model
+
+        user = get_user_model().objects.create_user(email="n@example.com", password="x", full_name="N")
+        self.client.force_login(user)
+        response = self.client.get(reverse("services:list"))
+        self.assertContains(response, '<a class="nav-link" href="/account/bookings/">My bookings</a>')
+        self.assertContains(response, '<button type="submit" class="nav-button">Log out</button>')
+        self.assertContains(response, 'aria-current="page" href="/services/">Services</a>')
+        self.assertNotContains(response, ">Login</a>")
