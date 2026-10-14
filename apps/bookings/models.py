@@ -45,6 +45,12 @@ class Booking(models.Model):
     contact_email = models.EmailField()
     contact_phone = models.CharField(max_length=13, validators=[phone_validator])
 
+    # Set when the booker books for someone else; contact_* stays the booker.
+    booked_for_guest = models.BooleanField(default=False)
+    guest_name = models.CharField(max_length=150, blank=True)
+    guest_phone = models.CharField(max_length=13, blank=True, validators=[phone_validator])
+    guest_email = models.EmailField(blank=True)
+
     date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()
@@ -61,6 +67,15 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.contact_name} on {self.date:%d %b %Y} at {self.start_time:%H:%M}"
+
+    @property
+    def reference(self):
+        return f"BLZ-{self.pk:06d}"
+
+    @property
+    def client_name(self):
+        """Who the appointment is for."""
+        return self.guest_name if self.booked_for_guest and self.guest_name else self.contact_name
 
     @property
     def starts_at(self):

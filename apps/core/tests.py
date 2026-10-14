@@ -1,12 +1,14 @@
 from decimal import Decimal
 from unittest import mock
 
+from datetime import time
+
 from django.template import Context, Template
 from django.test import RequestFactory, TestCase
 from django.urls import resolve, reverse
 
 from .models import SiteSettings
-from .templatetags.belleza import copyright_years, duration, rupees
+from .templatetags.belleza import clock, copyright_years, duration, rupees
 
 
 class SiteSettingsTests(TestCase):
@@ -56,6 +58,13 @@ class TemplateTagTests(TestCase):
         self.assertEqual(rupees(Decimal("1300.00")), "₹1,300")
         self.assertEqual(rupees(Decimal("99.50")), "₹99.50")
 
+    def test_clock(self):
+        self.assertEqual(clock(time(0, 0)), "12:00 AM")
+        self.assertEqual(clock(time(9, 5)), "9:05 AM")
+        self.assertEqual(clock(time(12, 30)), "12:30 PM")
+        self.assertEqual(clock(time(19, 30)), "7:30 PM")
+        self.assertEqual(clock("nope"), "nope")
+
     def test_duration(self):
         self.assertEqual(duration(45), "45 min")
         self.assertEqual(duration(90), "1 h 30 min")
@@ -79,11 +88,13 @@ class TemplateTagTests(TestCase):
         )
         self.assertEqual(html, '<a href="/#origin">About</a>')
 
-    def test_social_links_contact_variant_uses_local_x_icon(self):
-        default = self.client.get(reverse("core:home")).content.decode()
-        contact = self.client.get(reverse("core:contact")).content.decode()
-        self.assertIn("freepik.com", default)
-        self.assertIn("/static/img/x.svg", contact)
+    def test_social_links_use_local_icons(self):
+        for name in ("core:home", "core:contact"):
+            html = self.client.get(reverse(name)).content.decode()
+            for icon in ("facebook-svgrepo.svg", "instagram.svg", "x.svg"):
+                self.assertIn(f"/static/img/{icon}", html)
+            self.assertNotIn("freepik.com", html)
+            self.assertNotIn("pngtree.com", html)
 
 
 class NavBarTests(TestCase):

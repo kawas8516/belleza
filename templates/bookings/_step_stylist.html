@@ -1,0 +1,18 @@
+<fieldset class="booking-section wizard-step" id="section-stylist" data-step="stylist"{% if form.stylist.errors %} aria-describedby="id_stylist-error"{% endif %}>
+    <legend><h2 tabindex="-1">Who would you like to see?</h2></legend>
+    {% include "bookings/_field_errors.html" with field=form.stylist %}
+    <div class="option-grid">
+        <input type="radio" class="option-input" id="stylist-any" name="stylist" value=""{% if not selected_stylist %} checked{% endif %}>
+        <label class="option" for="stylist-any">
+            <span class="option-title">Any stylist</span>
+            <span class="option-meta">Whoever is free</span>
+        </label>
+        {% for stylist in stylists %}
+        <input type="radio" class="option-input" id="stylist-{{ stylist.pk }}" name="stylist" value="{{ stylist.pk }}" data-name="{{ stylist.name }}" data-categories="{% for c in stylist.specialties.all %}{{ c.pk }}{% if not forloop.last %} {% endif %}{% endfor %}"{% if stylist.pk|stringformat:"s" == selected_stylist %} checked{% endif %}>
+        <label class="option" for="stylist-{{ stylist.pk }}">
+            <span class="option-title">{{ stylist.name }}</span>
+            <span class="option-meta">{{ stylist.specialties.all|join:", " }}</span>
+        </label>
+        {% endfor %}
+    </div>
+</fieldset>

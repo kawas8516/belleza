@@ -8,12 +8,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.db import transaction
 from django.db.models import Prefetch
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET, require_POST
 from django.views.generic import CreateView, ListView
 
-from apps.services.models import Category, Service
+from apps.services.models import Category, Service, Stylist
 
 from .availability import day_slots, end_time_for
 from .forms import BookingForm
@@ -24,13 +25,20 @@ class BookingCreateView(LoginRequiredMixin, CreateView):
     form_class = BookingForm
     template_name = "bookings/booking_form.html"
     # Fields carried over when "Show times" re-renders the page via GET.
-    REFRESH_FIELDS = ("contact_name", "contact_email", "contact_phone", "stylist", "date", "start_time")
+    REFRESH_FIELDS = (
+        "contact_name", "contact_email", "contact_phone", "stylist", "date", "start_time",
+        "booked_for_guest", "guest_name", "guest_phone", "guest_email",
+    )
     # Where each field's error in the summary links to.
     ERROR_ANCHORS = {
         "services": "section-services",
         "stylist": "section-stylist",
         "start_time": "section-time",
         "date": "id_date",
+        "booked_for_guest": "section-who",
+        "guest_name": "id_guest_name",
+        "guest_phone": "id_guest_phone",
+        "guest_email": "id_guest_email",
         NON_FIELD_ERRORS: "booking-form",
     }
 
@@ -41,6 +49,11 @@ class BookingCreateView(LoginRequiredMixin, CreateView):
             del query["csrfmiddlewaretoken"]
             return redirect(f"{request.path}?{query.urlencode()}#section-time")
         return super().get(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
     def get_initial(self):
         user = self.request.user
@@ -121,6 +134,9 @@ class BookingCreateView(LoginRequiredMixin, CreateView):
             ],
             date_min=today,
             date_max=horizon,
+            slot_minutes=settings.BELLEZA_SLOT_MINUTES,
+            open_time=settings.BELLEZA_OPEN_TIME,
+            close_time=settings.BELLEZA_CLOSE_TIME,
             summary={
                 "count": len(chosen),
                 "minutes": minutes,
@@ -147,9 +163,83 @@ def _as_date(value):
 
 
 @login_required
+@require_GET
+def booking_slots(request):
+    """Slot availability for one day, used by the time sliders on the booking page."""
+    today = timezone.localdate()
+    day = _as_date(request.GET.get("date"))
+    if day is None or day < today or day > today + timedelta(days=settings.BELLEZA_BOOKING_HORIZON_DAYS):
+        return JsonResponse({"error": "Choose a date within the booking window."}, status=400)
+    stylist = None
+    stylist_id = request.GET.get("stylist", "")
+    if stylist_id:
+        stylist = Stylist.objects.filter(pk=stylist_id, is_active=True).first() if stylist_id.isdigit() else None
+        if stylist is None:
+            return JsonResponse({"error": "Unknown stylist."}, status=400)
+    slots = [
+        {
+            "time": slot.value,
+            "available": slot.available,
+            "reason": slot.reason,
+            "free_minutes": slot.free_minutes,
+        }
+        for slot in day_slots(day, stylist)
+    ]
+    return JsonResponse({"date": day.isoformat(), "slots": slots})
+
+
+@login_required
 def booking_success(request, pk):
     booking = get_object_or_404(Booking, pk=pk, customer=request.user)
     return render(request, "bookings/booking_success.html", {"booking": booking})
+
+
+def _ics_text(value):
+    text = str(value).replace("\\", "\\\\").replace(";", "\\;").replace(",", "\\,")
+    return text.replace("\n", "\\n")
+
+
+@login_required
+@require_GET
+def booking_calendar(request, pk):
+    """The appointment as an .ics file (floating local time, no timezone shift)."""
+    booking = get_object_or_404(
+        Booking.objects.select_related("stylist").prefetch_related("services"),
+        pk=pk,
+        customer=request.user,
+    )
+    start = f"{booking.date:%Y%m%d}T{booking.start_time:%H%M%S}"
+    end = f"{booking.date:%Y%m%d}T{booking.end_time:%H%M%S}"
+    services = ", ".join(service.name for service in booking.services.all())
+    description = f"{services}. Stylist: {booking.stylist or 'Any available stylist'}. Reference {booking.reference}."
+    lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Belleza//Booking//EN",
+        "CALSCALE:GREGORIAN",
+        "BEGIN:VEVENT",
+        f"UID:booking-{booking.pk}@belleza",
+        f"DTSTAMP:{timezone.now():%Y%m%dT%H%M%SZ}",
+        f"DTSTART:{start}",
+        f"DTEND:{end}",
+        f"SUMMARY:{_ics_text('Belleza appointment')}",
+        f"DESCRIPTION:{_ics_text(description)}",
+        "END:VEVENT",
+        "END:VCALENDAR",
+    ]
+    response = HttpResponse("\r\n".join(lines) + "\r\n", content_type="text/calendar; charset=utf-8")
+    response["Content-Disposition"] = f'attachment; filename="belleza-{booking.reference}.ics"'
+    return response
+
+
+@login_required
+def booking_receipt(request, pk):
+    booking = get_object_or_404(
+        Booking.objects.select_related("stylist").prefetch_related("services"),
+        pk=pk,
+        customer=request.user,
+    )
+    return render(request, "bookings/booking_receipt.html", {"booking": booking})
 
 
 class MyBookingsView(LoginRequiredMixin, ListView):

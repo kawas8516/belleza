@@ -1,24 +1,28 @@
 {% extends "bookings/_booking_base.html" %}
-{% load static %}
+{% load belleza %}
 
 {% block title %}Book an appointment &mdash; Belleza{% endblock %}
 
-{% block extra_head_js %}<script defer src="{% static 'js/booking.js' %}"></script>{% endblock %}
+{# Early, so the stacked form never flashes before the wizard takes over. #}
+{% block extra_head_js %}<script>document.documentElement.classList.add("js");</script><script defer src="{% static_v 'js/booking.js' %}"></script>{% endblock %}
 
 {% block content %}
   <main class="registration-container booking">
     <a class="booking-back" href="{% url 'core:home' %}">&larr; Back to Belleza</a>
     <h1>Book an appointment</h1>
-    <p class="booking-lead">Pick your services, a stylist and a time. You'll see the total before you book.</p>
+    <p class="booking-lead" data-lead>Tell us who it's for, pick your services and a time. You'll see the total before you book.</p>
 
+    {% include "bookings/_progress.html" %}
     {% include "bookings/_error_summary.html" %}
 
-    <form method="post" action="{% url 'bookings:create' %}" class="booking-form" id="booking-form" novalidate data-booking-form>
+    <form method="post" action="{% url 'bookings:create' %}" class="booking-form" id="booking-form" novalidate data-booking-form data-slots-url="{% url 'bookings:slots' %}" data-slot-step="{{ slot_minutes }}" data-open="{{ open_time|time:'H:i' }}" data-close="{{ close_time|time:'H:i' }}">
         {% csrf_token %}
-        {% include "bookings/_section_details.html" %}
-        {% include "bookings/_section_services.html" %}
-        {% include "bookings/_section_stylist.html" %}
-        {% include "bookings/_section_datetime.html" %}
+        {% include "bookings/_step_who.html" %}
+        {% include "bookings/_step_services.html" %}
+        {% include "bookings/_step_stylist.html" %}
+        {% include "bookings/_step_datetime.html" %}
+        {% include "bookings/_step_guest.html" %}
+        {% include "bookings/_step_confirm.html" %}
         {% include "bookings/_summary_bar.html" %}
     </form>
   </main>

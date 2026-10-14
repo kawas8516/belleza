@@ -1,5 +1,9 @@
 {% load belleza %}
 <div class="summary-bar">
-    <p class="summary-text" aria-live="polite" data-summary-text>{% if summary.count %}{{ summary.count }} service{{ summary.count|pluralize }} · {{ summary.minutes|duration }}{% if summary.end_time %} · ends {{ summary.end_time|time:"H:i" }}{% endif %} · <strong>{{ summary.total|rupees }}</strong>{% else %}Choose at least one service{% endif %}</p>
-    <button type="submit" class="button-primary">Book appointment</button>
+    <p class="summary-text" aria-live="polite" data-summary-text>{% if summary.count %}{{ summary.count }} service{{ summary.count|pluralize }} · {{ summary.minutes|duration }}{% if summary.end_time %} · ends {{ summary.end_time|clock }}{% endif %} · <strong>{{ summary.total|rupees }}</strong>{% else %}Choose at least one service{% endif %}</p>
+    <div class="summary-actions">
+        <button type="button" class="btn btn--secondary js-only" data-nav="back">Back</button>
+        <button type="button" class="btn btn--primary js-only" data-nav="next">Next</button>
+        <button type="submit" class="btn btn--primary" data-submit>Book appointment</button>
+    </div>
 </div>

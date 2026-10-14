@@ -1,0 +1,16 @@
+<fieldset class="booking-section wizard-step" id="section-who" data-step="who">
+    <legend><h2 tabindex="-1">Who is this booking for?</h2></legend>
+    {% include "bookings/_field_errors.html" with field=form.booked_for_guest %}
+    <div class="option-grid option-grid--wide">
+        <input type="radio" class="option-input" id="for-self" name="booked_for_guest" value="false"{% if not form.booked_for_guest.value %} checked{% endif %}>
+        <label class="option option--card" for="for-self">
+            <span class="option-title">Myself</span>
+            <span class="option-meta">Book under my account</span>
+        </label>
+        <input type="radio" class="option-input" id="for-guest" name="booked_for_guest" value="true"{% if form.booked_for_guest.value %} checked{% endif %}>
+        <label class="option option--card" for="for-guest">
+            <span class="option-title">Someone else</span>
+            <span class="option-meta">A friend or family member</span>
+        </label>
+    </div>
+</fieldset>

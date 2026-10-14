@@ -1,0 +1,21 @@
+<fieldset class="booking-section wizard-step" id="section-guest" data-step="guest">
+    <legend><h2 tabindex="-1">Who are we expecting?</h2></legend>
+    <p class="section-hint">Only needed when you book for someone else.</p>
+    <div class="field-grid">
+        <div class="field field--wide">
+            <label for="id_guest_name">Guest's name</label>
+            <input type="text" id="id_guest_name" name="guest_name" value="{{ form.guest_name.value|default_if_none:'' }}" autocomplete="off"{% if form.guest_name.errors %} aria-invalid="true" aria-describedby="id_guest_name-error"{% endif %}>
+            {% include "bookings/_field_errors.html" with field=form.guest_name %}
+        </div>
+        <div class="field">
+            <label for="id_guest_phone">Guest's phone</label>
+            <input type="tel" id="id_guest_phone" name="guest_phone" value="{{ form.guest_phone.value|default_if_none:'' }}" autocomplete="off" placeholder="+919876543210"{% if form.guest_phone.errors %} aria-invalid="true" aria-describedby="id_guest_phone-error"{% endif %}>
+            {% include "bookings/_field_errors.html" with field=form.guest_phone %}
+        </div>
+        <div class="field">
+            <label for="id_guest_email">Guest's email</label>
+            <input type="email" id="id_guest_email" name="guest_email" value="{{ form.guest_email.value|default_if_none:'' }}" autocomplete="off"{% if form.guest_email.errors %} aria-invalid="true" aria-describedby="id_guest_email-error"{% endif %}>
+            {% include "bookings/_field_errors.html" with field=form.guest_email %}
+        </div>
+    </div>
+</fieldset>

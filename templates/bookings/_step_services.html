@@ -1,0 +1,35 @@
+{% load belleza %}
+<fieldset class="booking-section wizard-step" id="section-services" data-step="services"{% if form.services.errors %} aria-describedby="id_services-error"{% endif %}>
+    <legend><h2 tabindex="-1">What would you like done?</h2></legend>
+    <p class="section-hint js-only">Open an area to see its services. Choose as many as you like.</p>
+    <p class="section-hint no-js-only">Choose one or more.</p>
+    <p class="quick-row js-only"><button type="button" class="btn btn--quiet" data-clear-services hidden>Clear all</button></p>
+    {% include "bookings/_field_errors.html" with field=form.services %}
+
+    <div class="option-grid category-grid js-only">
+        {% for category in categories %}{% with services=category.services.all %}{% if services %}
+        <input type="checkbox" class="option-input" id="category-{{ category.pk }}" data-category-toggle="{{ category.pk }}" aria-controls="group-{{ category.pk }}">
+        <label class="option option--card" for="category-{{ category.pk }}">
+            <span class="option-title">{{ category.name }}</span>
+            <span class="option-meta">{{ services|length }} service{{ services|length|pluralize }}</span>
+            <span class="option-count" data-category-count="{{ category.pk }}" hidden></span>
+        </label>
+        {% endif %}{% endwith %}{% endfor %}
+    </div>
+
+    {% for category in categories %}{% with services=category.services.all %}{% if services %}
+    <fieldset class="service-group" id="group-{{ category.pk }}" data-category-group="{{ category.pk }}">
+        <legend>{{ category.name }}</legend>
+        <div class="option-grid">
+            {% for service in services %}
+            <input type="checkbox" class="option-input" id="service-{{ service.pk }}" name="services" value="{{ service.pk }}" data-minutes="{{ service.duration_minutes }}" data-price="{{ service.price|stringformat:'s' }}" data-name="{{ service.name }}" data-category="{{ category.pk }}"{% if service.pk|stringformat:"s" in selected_service_ids %} checked{% endif %}>
+            <label class="option" for="service-{{ service.pk }}">
+                <span class="option-title">{{ service.name }}</span>
+                <span class="option-meta">{{ service.duration_minutes|duration }} · {{ service.price|rupees }}</span>
+            </label>
+            {% endfor %}
+        </div>
+    </fieldset>
+    {% endif %}{% endwith %}{% endfor %}
+    <p class="empty-hint js-only" data-services-empty>Pick an area above to see its services.</p>
+</fieldset>

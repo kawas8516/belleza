@@ -21,6 +21,10 @@ class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
         fields = (
+            "booked_for_guest",
+            "guest_name",
+            "guest_phone",
+            "guest_email",
             "contact_name",
             "contact_email",
             "contact_phone",
@@ -37,8 +41,50 @@ class BookingForm(forms.ModelForm):
             "contact_phone": {"required": "Enter a phone number we can reach you on."},
         }
 
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+        # Booker details default to the account when left blank (self-bookings
+        # keep the old behaviour of posting them from the form).
+        for name in ("contact_name", "contact_email", "contact_phone"):
+            self.fields[name].required = False
+
+    def _clean_guest(self, cleaned):
+        if not cleaned.get("booked_for_guest"):
+            for name in ("guest_name", "guest_phone", "guest_email"):
+                cleaned[name] = ""
+            return
+        labels = {
+            "guest_name": "Enter the guest's name.",
+            "guest_phone": "Enter a phone number for the guest.",
+            "guest_email": "Enter the guest's email.",
+        }
+        for name, message in labels.items():
+            if not cleaned.get(name) and name not in self.errors:
+                self.add_error(name, message)
+
+    def _fill_contact(self, cleaned):
+        user = self.user
+        defaults = {
+            "contact_name": getattr(user, "full_name", ""),
+            "contact_email": getattr(user, "email", ""),
+            "contact_phone": getattr(user, "phone", ""),
+        }
+        messages = {
+            "contact_name": "Enter your name.",
+            "contact_email": "Enter your email.",
+            "contact_phone": "Enter a phone number we can reach you on.",
+        }
+        for name, default in defaults.items():
+            if not cleaned.get(name):
+                cleaned[name] = default
+            if not cleaned.get(name) and name not in self.errors:
+                self.add_error(name, messages[name])
+
     def clean(self):
         cleaned = super().clean()
+        self._clean_guest(cleaned)
+        self._fill_contact(cleaned)
         services = cleaned.get("services")
         date = cleaned.get("date")
         start = cleaned.get("start_time")

@@ -1,0 +1,53 @@
+{% extends "bookings/_booking_base.html" %}
+{% load belleza %}
+
+{% block title %}Receipt {{ booking.reference }} &mdash; Belleza{% endblock %}
+
+{% block extra_head_js %}<script defer src="{% static_v 'js/receipt.js' %}"></script>{% endblock %}
+
+{% block content %}
+  <main class="registration-container receipt">
+    <header class="receipt-head">
+        <h1>{{ site.footer_brand|default:"Belleza" }}</h1>
+        <p class="receipt-title">Booking receipt</p>
+        <p class="receipt-ref">{{ booking.reference }} &middot; issued {{ booking.created_at|date:"j F Y" }}</p>
+    </header>
+
+    <dl class="detail-list">
+        <dt>Booked by</dt>
+        <dd>{{ booking.contact_name }}<br>{{ booking.contact_email }}<br>{{ booking.contact_phone }}</dd>
+        {% if booking.booked_for_guest %}
+        <dt>Booked for</dt>
+        <dd>{{ booking.guest_name }}<br>{{ booking.guest_email }}<br>{{ booking.guest_phone }}</dd>
+        {% endif %}
+        <dt>Appointment</dt>
+        <dd>{{ booking.date|date:"l, j F Y" }}<br>{{ booking.start_time|clock }}&ndash;{{ booking.end_time|clock }}</dd>
+        <dt>Stylist</dt>
+        <dd>{{ booking.stylist|default:"Any available stylist" }}</dd>
+        <dt>Status</dt>
+        <dd><span class="badge badge--{{ booking.status }}">{{ booking.get_status_display }}</span></dd>
+    </dl>
+
+    <table class="receipt-lines">
+        <thead>
+            <tr><th scope="col">Service</th><th scope="col">Duration</th><th scope="col" class="num">Price</th></tr>
+        </thead>
+        <tbody>
+            {% for service in booking.services.all %}
+            <tr><td>{{ service.name }}</td><td>{{ service.duration_minutes|duration }}</td><td class="num">{{ service.price|rupees }}</td></tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr><th scope="row" colspan="2">Total</th><td class="num">{{ booking.total_price|rupees }}</td></tr>
+        </tfoot>
+    </table>
+
+    <p class="receipt-note">Payment is taken at the salon. Please arrive 5 minutes early.</p>
+    {% if site.address %}<p class="receipt-note">{{ site.address }}{% if site.phone %} &middot; {{ site.phone }}{% endif %}</p>{% endif %}
+
+    <p class="page-actions">
+        <button type="button" class="btn btn--primary" data-print>Print / Save as PDF</button>
+        <a class="btn btn--secondary" href="{% url 'bookings:success' booking.pk %}">Back</a>
+    </p>
+  </main>
+{% endblock %}

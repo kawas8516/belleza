@@ -1,6 +1,9 @@
 from decimal import Decimal, InvalidOperation
 
+import os
+
 from django import template
+from django.contrib.staticfiles import finders
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
@@ -20,6 +23,16 @@ def nav_link(context, view_name, label, anchor=""):
 
 
 @register.simple_tag
+def static_v(path):
+    """static() plus ?v=<mtime>, so an edited CSS/JS file is never served stale from cache."""
+    url = static(path)
+    found = finders.find(path)
+    if found and os.path.exists(found):
+        return f"{url}?v={int(os.path.getmtime(found))}"
+    return url
+
+
+@register.simple_tag
 def copyright_years(start_year):
     """"2023–2026", or just the year once start and current year match."""
     current = timezone.localdate().year
@@ -27,12 +40,13 @@ def copyright_years(start_year):
     return str(current) if start >= current else f"{start}–{current}"
 
 
-# Footer social links. `contact_icon` reproduces the contact page's local X icon.
+# Footer social links. All icons are local white SVGs: the old remote PNG/JPG
+# icons carried their own background and showed as a box on the black footer.
 SOCIAL_LINKS = [
     {
         "name": "Facebook",
         "url": "https://www.facebook.com/",
-        "icon": "https://png.pngtree.com/element_our/sm/20180314/sm_5aa8fcedbfd40.png",
+        "icon": "img/facebook-svgrepo.svg",
     },
     {
         "name": "Instagram",
@@ -42,8 +56,7 @@ SOCIAL_LINKS = [
     {
         "name": "Twitter",
         "url": "https://www.twitter.com/",
-        "icon": "https://img.freepik.com/free-vector/twitter-new-2023-x-logo-white-background-vector_1017-45422.jpg",
-        "contact_icon": "img/x.svg",
+        "icon": "img/x.svg",
     },
 ]
 
@@ -56,8 +69,7 @@ def _icon_src(path):
 def social_links(variant=""):
     links = []
     for link in SOCIAL_LINKS:
-        icon = link.get("contact_icon") if variant == "contact" else None
-        links.append({**link, "icon_src": _icon_src(icon or link["icon"])})
+        links.append({**link, "icon_src": _icon_src(link["icon"])})
     return {"links": links}
 
 
@@ -82,6 +94,16 @@ def rupees(value):
         whole = ",".join(groups + [tail])
     suffix = "" if paise == "00" else f".{paise}"
     return f"{sign}₹{whole}{suffix}"
+
+
+@register.filter
+def clock(value):
+    """time(15, 0) -> "3:00 PM". One 12-hour format for every booking page."""
+    try:
+        hour, minute = value.hour, value.minute
+    except AttributeError:
+        return value
+    return f"{hour % 12 or 12}:{minute:02d} {'AM' if hour < 12 else 'PM'}"
 
 
 @register.filter

@@ -114,7 +114,9 @@ class BookingOwnershipTests(BookingTestCase):
 
     def test_success_page_for_owner(self):
         response = self.client.get(reverse("bookings:success", args=[self.booking.pk]))
-        self.assertContains(response, "Booking received")
+        self.assertContains(response, "You're booked")
+        self.assertContains(response, self.booking.reference)
+        self.assertContains(response, reverse("bookings:receipt", args=[self.booking.pk]))
         self.assertContains(response, "Haircut")
 
     def test_other_user_gets_404(self):
@@ -249,8 +251,154 @@ class BookingPolishTests(BookingTestCase):
         response = self.client.get(reverse("bookings:create"), {"date": past.isoformat()})
         self.assertContains(response, "That date has passed.")
 
-    def test_sections_have_headings_and_back_link(self):
+    def test_steps_have_headings_and_back_link(self):
         response = self.client.get(reverse("bookings:create"))
-        for title in ("Your details", "Services", "Stylist", "Date &amp; time"):
-            self.assertContains(response, f"<legend><h2>{title}</h2></legend>")
+        for step in ("who", "services", "stylist", "datetime", "guest", "confirm"):
+            self.assertContains(response, f'data-step="{step}"')
+        self.assertContains(response, "Who is this booking for?")
         self.assertContains(response, 'class="booking-back" href="/"')
+
+
+class GuestBookingTests(BookingTestCase):
+    def test_guest_details_required_when_booking_for_someone(self):
+        response = self.post_booking(booked_for_guest="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Booking.objects.count(), 0)
+        self.assertContains(response, "Enter the guest&#x27;s name.")
+
+    def test_guest_booking_saved(self):
+        self.post_booking(
+            booked_for_guest="true", guest_name="Mira", guest_phone="+919000000000", guest_email="mira@example.com"
+        )
+        booking = Booking.objects.get()
+        self.assertTrue(booking.booked_for_guest)
+        self.assertEqual(booking.guest_name, "Mira")
+        self.assertEqual(booking.client_name, "Mira")
+        self.assertEqual(booking.contact_name, "Asha")
+
+    def test_guest_fields_ignored_for_self_booking(self):
+        self.post_booking(booked_for_guest="false", guest_name="Ignored")
+        booking = Booking.objects.get()
+        self.assertFalse(booking.booked_for_guest)
+        self.assertEqual(booking.guest_name, "")
+        self.assertEqual(booking.client_name, "Asha")
+
+    def test_contact_defaults_to_account(self):
+        self.post_booking(contact_name="", contact_email="", contact_phone="")
+        booking = Booking.objects.get()
+        self.assertEqual(booking.contact_name, "Asha")
+        self.assertEqual(booking.contact_phone, "+919876543210")
+
+
+class SlotsEndpointTests(BookingTestCase):
+    def test_returns_slots_with_booked_marked(self):
+        self.post_booking()
+        response = self.client.get(
+            reverse("bookings:slots"), {"date": self.tomorrow.isoformat(), "stylist": self.stylist.pk}
+        )
+        self.assertEqual(response.status_code, 200)
+        slots = {slot["time"]: slot for slot in response.json()["slots"]}
+        self.assertEqual(slots["11:00"]["reason"], "booked")
+        self.assertTrue(slots["10:00"]["available"])
+        self.assertEqual(slots["10:00"]["free_minutes"], 60)
+
+    def test_rejects_bad_date_and_stylist(self):
+        self.assertEqual(self.client.get(reverse("bookings:slots"), {"date": "nope"}).status_code, 400)
+        past = (timezone.localdate() - timedelta(days=1)).isoformat()
+        self.assertEqual(self.client.get(reverse("bookings:slots"), {"date": past}).status_code, 400)
+        response = self.client.get(
+            reverse("bookings:slots"), {"date": self.tomorrow.isoformat(), "stylist": "9999"}
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_requires_login(self):
+        self.client.logout()
+        response = self.client.get(reverse("bookings:slots"), {"date": self.tomorrow.isoformat()})
+        self.assertEqual(response.status_code, 302)
+
+
+class ReceiptTests(BookingTestCase):
+    def setUp(self):
+        super().setUp()
+        self.post_booking()
+        self.booking = Booking.objects.get()
+
+    def test_reference_format(self):
+        self.assertEqual(self.booking.reference, f"BLZ-{self.booking.pk:06d}")
+
+    def test_owner_sees_receipt(self):
+        response = self.client.get(reverse("bookings:receipt", args=[self.booking.pk]))
+        self.assertContains(response, self.booking.reference)
+        self.assertContains(response, "Haircut")
+        self.assertContains(response, "₹1,300")
+
+    def test_other_user_gets_404(self):
+        other = User.objects.create_user(email="o@example.com", password="x-Belleza-2026", full_name="O")
+        self.client.force_login(other)
+        response = self.client.get(reverse("bookings:receipt", args=[self.booking.pk]))
+        self.assertEqual(response.status_code, 404)
+
+
+class StandardizedFormatsTests(BookingTestCase):
+    def setUp(self):
+        super().setUp()
+        self.post_booking()
+        self.booking = Booking.objects.get()
+
+    def test_my_bookings_uses_12h_times_rupees_and_badge(self):
+        html = self.client.get(reverse("bookings:mine")).content.decode()
+        self.assertIn("11:00 AM", html)
+        self.assertIn("12:30 PM", html)
+        self.assertIn("₹1,300", html)
+        self.assertIn("badge badge--pending", html)
+        self.assertIn(reverse("bookings:receipt", args=[self.booking.pk]), html)
+
+    def test_booking_form_has_no_24h_summary_or_old_classes(self):
+        html = self.client.get(reverse("bookings:create")).content.decode()
+        self.assertNotIn("button-primary", html)
+        self.assertNotIn('class="chip', html)
+        self.assertIn("btn btn--primary", html)
+
+
+class CalendarAndBookAgainTests(TestCase):
+    def setUp(self):
+        from apps.services.models import Category, Service
+
+        self.user = get_user_model().objects.create_user(
+            email="cal@example.com", password="Testpass12345!", full_name="Cal", phone="9876543210"
+        )
+        service = Service.objects.create(
+            category=Category.objects.get_or_create(slug="hair", defaults={"name": "Hair"})[0],
+            name="Calendar cut", slug="calendar-cut", duration_minutes=45, price=500,
+        )
+        self.booking = Booking.objects.create(
+            customer=self.user, contact_name="Cal", contact_email="cal@example.com",
+            contact_phone="9876543210", date=timezone.localdate() + timedelta(days=2),
+            start_time=time(14, 0), end_time=time(14, 45),
+        )
+        self.booking.services.add(service)
+        self.service = service
+
+    def test_calendar_download(self):
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("bookings:calendar", args=[self.booking.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/calendar; charset=utf-8")
+        body = response.content.decode()
+        self.assertIn("DTSTART:", body)
+        self.assertIn("T140000", body)
+        self.assertIn("T144500", body)
+
+    def test_calendar_is_owner_only(self):
+        other = get_user_model().objects.create_user(
+            email="o@example.com", password="Testpass12345!", full_name="O", phone="9876543211"
+        )
+        self.client.force_login(other)
+        response = self.client.get(reverse("bookings:calendar", args=[self.booking.pk]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_book_again_prefills_services(self):
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("bookings:create"), {"services": [self.service.pk]})
+        self.assertContains(response, f'id="service-{self.service.pk}"')
+        self.assertContains(response, "checked")

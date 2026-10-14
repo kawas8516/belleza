@@ -5,9 +5,9 @@ from .models import Booking
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-    list_display = ("contact_name", "customer", "date", "start_time", "end_time", "stylist", "status", "total_price")
-    list_filter = ("status", "date", "stylist")
-    search_fields = ("contact_name", "contact_email", "contact_phone", "customer__email")
+    list_display = ("contact_name", "booked_for_guest", "guest_name", "customer", "date", "start_time", "end_time", "stylist", "status", "total_price")
+    list_filter = ("status", "booked_for_guest", "date", "stylist")
+    search_fields = ("contact_name", "contact_email", "contact_phone", "guest_name", "guest_phone", "customer__email")
     date_hierarchy = "date"
     filter_horizontal = ("services",)
     list_select_related = ("customer", "stylist")
